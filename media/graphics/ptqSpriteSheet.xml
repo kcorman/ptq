@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
+<!-- $TexturePacker:SmartUpdate:f96d1a24fae52c5455be416ccab503ff:3690c2330498e331ccf20e3defb485ee:e075cd485a998f6c8e61b1b951c1e000$ -->
+<TextureAtlas imagePath="ptqSpriteSheet.png">
+    <SubTexture name="background_simple" x="2" y="2" width="480" height="320"/>
+    <SubTexture name="clouds_simple" x="2" y="324" width="480" height="320"/>
+    <SubTexture name="grass1" x="2" y="646" width="16" height="16"/>
+    <SubTexture name="grass2" x="20" y="646" width="16" height="16"/>
+    <SubTexture name="pboat_1" x="38" y="646" width="32" height="32"/>
+    <SubTexture name="pboat_2" x="72" y="646" width="32" height="32"/>
+    <SubTexture name="pboat_3" x="106" y="646" width="32" height="32"/>
+    <SubTexture name="tree1" x="140" y="646" width="16" height="16"/>
+    <SubTexture name="villager_walk_D_1" x="158" y="646" width="16" height="16"/>
+    <SubTexture name="villager_walk_D_2" x="176" y="646" width="16" height="16"/>
+    <SubTexture name="villager_walk_L_1" x="194" y="646" width="16" height="16"/>
+    <SubTexture name="villager_walk_L_2" x="212" y="646" width="16" height="16"/>
+    <SubTexture name="villager_walk_R_1" x="230" y="646" width="16" height="16"/>
+    <SubTexture name="villager_walk_R_2" x="248" y="646" width="16" height="16"/>
+    <SubTexture name="villager_walk_U_1" x="266" y="646" width="16" height="16"/>
+    <SubTexture name="villager_walk_U_2" x="284" y="646" width="16" height="16"/>
+    <SubTexture name="waves_simple" x="2" y="680" width="480" height="320"/>
+</TextureAtlas>

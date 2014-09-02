@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
+<!-- $TexturePacker:SmartUpdate:92d0d63e07f6da32fa381c7f712fe3ee:bddc61581b17c7b2e954d05b8e3340df:c07b641bf9a7ab87f7dce834ebf632c5$ -->
+<TextureAtlas imagePath="boatSpriteSheet.png">
+    <SubTexture name="background_simple" x="2" y="2" width="480" height="320"/>
+    <SubTexture name="clouds_simple" x="2" y="324" width="480" height="320"/>
+    <SubTexture name="pboat_1" x="2" y="646" width="32" height="32"/>
+    <SubTexture name="pboat_2" x="36" y="646" width="32" height="32"/>
+    <SubTexture name="pboat_3" x="70" y="646" width="32" height="32"/>
+    <SubTexture name="waves_simple" x="2" y="680" width="480" height="320"/>
+</TextureAtlas>
