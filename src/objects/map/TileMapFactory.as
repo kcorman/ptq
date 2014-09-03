@@ -7,7 +7,7 @@ package objects.map {
  */
 public class TileMapFactory {
 
-    private static const TILE_SIZE:uint = 32;
+    private static const TILE_SIZE:uint = 16;
 
     public function TileMapFactory() {
 

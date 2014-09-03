@@ -47,7 +47,7 @@ public class InGame extends Screen {
     }
 
     private function drawGame() : void {
-        tilemap = mapFact.generateMap(level);
+        tilemap = mapFact.generateMap(level, stage.stageWidth, stage.stageHeight);
         this.addChild(tilemap);
         collsMgr.addTilemap(tilemap);
         hero = new Boat();

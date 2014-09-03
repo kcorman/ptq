@@ -85,7 +85,7 @@ public class Boat extends Unit {
     }
 
     private function createHeroArt():void{
-        addAllDirectionalClips("villager_walk", 64, 64);
+        addAllDirectionalClips("villager_walk", 24, 24);
     }
 
 }
