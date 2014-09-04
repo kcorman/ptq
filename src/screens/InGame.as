@@ -4,18 +4,19 @@
 package screens {
 import managers.CollisionManager;
 
-import objects.Boat;
+import objects.Engineer;
+
+import objects.Player;
+import objects.Tower;
+
 import objects.Unit;
 import objects.map.TileMapFactory;
 import objects.map.Tilemap;
-
-import starling.display.BlendMode;
-
-import starling.display.Sprite;
 import starling.events.Event;
+import starling.utils.Color;
 
 public class InGame extends Screen {
-    private var hero:Boat;
+    private var player:Player;
 
     private var tilemap:Tilemap;
 
@@ -33,6 +34,7 @@ public class InGame extends Screen {
         mapFact = new TileMapFactory();
         collsMgr = new CollisionManager();
         units = new Vector.<Unit>;
+        player = new Player(1, Color.RED, new Engineer());
     }
 
     override public function onAddedToStage(event:Event) : void{
@@ -50,10 +52,15 @@ public class InGame extends Screen {
         tilemap = mapFact.generateMap(level, stage.stageWidth, stage.stageHeight);
         this.addChild(tilemap);
         collsMgr.addTilemap(tilemap);
-        hero = new Boat();
-        hero.x = stage.stageWidth/2;
-        hero.y = stage.stageHeight/2;
-        addUnit(hero);
+        player.hero.x = stage.stageWidth/2;
+        player.hero.y = stage.stageHeight/2;
+
+        var unit:Tower = new Tower(40,40);
+        addUnit(unit);
+        addUnit(player.hero);
+        //for(var i:int=0;i<80;i++){
+        //    addUnit(new Engineer(Math.random()*320,Math.random()*480));
+        //}
     }
 
     public function addUnit(unit:Unit) : void{

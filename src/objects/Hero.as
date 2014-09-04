@@ -1,14 +1,12 @@
 /**
- * Created by Goose on 8/17/14.
+ * Created by Goose on 9/2/14.
  */
 package objects {
-import flash.utils.getTimer;
-
 import starling.events.Event;
 import starling.events.Touch;
 import starling.events.TouchEvent;
 
-public class Boat extends Unit {
+public class Hero extends Unit {
     private var touchX:Number;
     private var touchY:Number;
     private var elapsedTime:Number;
@@ -17,19 +15,17 @@ public class Boat extends Unit {
     private var oldY:Number;
     private var dy:Number = 0;
 
-
-    public function Boat() {
+    public function Hero(x:Number=0, y:Number=0) {
         super();
+        this.x = x;
+        this.y = y;
         this.addEventListener(starling.events.Event.ADDED_TO_STAGE, onAddedToStage);
-        trace("Hero created");
     }
 
     private function onAddedToStage(event:Event):void{
         this.removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
-        width = 64;
-        height = 64;
-        createHeroArt();
-        y = stage.stageHeight - 128;
+        width = 24;
+        height = 24;
         this.addEventListener(Event.ENTER_FRAME, onEnterFrame);
         stage.addEventListener(TouchEvent.TOUCH, onMouseClick);
         this.addEventListener(TouchEvent.TOUCH, onMouseClick);
@@ -44,18 +40,17 @@ public class Boat extends Unit {
     }
 
     private function onEnterFrame(event:Event) : void{
-        updateTime();
         var difU:Number = 0;
         var difD:Number = 0;
         var difL:Number = 0;
         var difR:Number = 0;
         if(touchX){
-            x -= (x - touchX) * 0.05;
+            x -= (x - touchX) * 0.01;
             difR = (touchX - x);
             difL = -difR;
         }
         if(touchY){
-            y -= (y - touchY) * 0.05;
+            y -= (y - touchY) * 0.01;
             difU = (y - touchY);
             difD = -difU;
         }
@@ -64,6 +59,11 @@ public class Boat extends Unit {
         if(max == difD) facing = FACING_DOWN;
         if(max == difR) facing = FACING_RIGHT;
         if(max == difL) facing = FACING_LEFT;
+        if(max < 3){
+            action = "stand";
+        }else{
+            action = "walk";
+        }
         if(isJumping){
             dy += (GameConstants.GRAVITY * elapsedTime);
             y += (dy * elapsedTime);
@@ -76,17 +76,5 @@ public class Boat extends Unit {
         //if(y+heroArt.height > stage.stageHeight) y = stage.stageHeight - heroArt.height;
         //if(y < 0) y = 0;
     }
-
-    private function updateTime() : void{
-        var previousTime:Number = currentTime;
-        currentTime = getTimer();
-        // time it takes for a frame to pass in seconds
-        elapsedTime = (currentTime - previousTime)/1000;
-    }
-
-    private function createHeroArt():void{
-        addAllDirectionalClips("villager_walk", 24, 24);
-    }
-
 }
 }

@@ -17,7 +17,7 @@ public class Assets {
 
     [Embed(source="../media/graphics/ptqSpriteSheet.xml", mimeType="application/octet-stream")]
     public static const AtlasXmlGame:Class;
-
+//
     private static var gameTextureAtlas:TextureAtlas;
 
     public static function getAtlas():TextureAtlas{

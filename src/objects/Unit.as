@@ -28,6 +28,14 @@ public class Unit extends Sprite{
 
     private var _facing:String = FACING_DOWN;
 
+    private var _action:String = "stand";
+
+    public var cost:int = 0;
+
+    public var buildTime:Number = 0;
+
+    public var isBeingBuilt:Boolean = false;
+
     public var life:Number = 1;
 
     public var xSpeed:Number = 0;
@@ -44,13 +52,18 @@ public class Unit extends Sprite{
 
     public var isAlive:Boolean = true;
 
-    public function Unit() {
+
+    public function Unit(x:Number=0, y:Number=0) {
+        this.x = x;
+        this.y = y;
         this.addEventListener(starling.events.Event.ADDED_TO_STAGE, onAddedToStage);
         artClips = new Object();
     }
 
     private function onAddedToStage(e:Event) : void{
         this.removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
+        createUnitArt();
+        facing = FACING_DOWN;
     }
 
 
@@ -61,6 +74,18 @@ public class Unit extends Sprite{
         rotation += angularSpeed * timePassed;
     }
 
+    public function get action():String {
+        return _action;
+    }
+
+    public function set action(value:String):void {
+        if(value != _action){
+            if(updateAnimation(value, _facing)){
+                _action = value;
+            }
+        }
+    }
+
     public function get facing():String {
         return _facing;
     }
@@ -68,27 +93,58 @@ public class Unit extends Sprite{
     public function set facing(value:String):void {
         // remove old clip, add new one
         if(value != _facing){
-            if(artClips[value] == undefined){
-                return; //do nothing if we don't have an animation for it
+            if(updateAnimation(_action, value)){
+                _facing = value;
             }
-            removeChild(artClips[_facing]);
-            addChild(artClips[value]);
-            _facing = value;
         }
     }
 
-    protected function addAllDirectionalClips(namePrefix:String, width:uint, height:uint, speed:Number=5, x:int=0, y:int =0) : void{
-        for each(var dir:String in dirs){
-            var clip:MovieClip = new MovieClip(Assets.getAtlas().getTextures(namePrefix+"_"+dir), speed);
-            clip.smoothing = TextureSmoothing.NONE;
-            //clip.x = Math.ceil(-heroArt.width/2);
-            //heroArt.y = Math.ceil(-heroArt.height/2);
-            clip.width = width;
-            clip.height = height;
-            starling.core.Starling.juggler.add(clip);
-            artClips[dir] = clip;
+    protected function updateAnimation(newAction:String, newFacing:String) : Boolean {
+        if(artClips[newAction] != undefined){
+            if(artClips[newAction][newFacing] != undefined){
+                if(artClips[_action] != undefined && artClips[_action][_facing] != undefined){
+                    removeChild(artClips[_action][_facing]);
+                }
+                addChild(artClips[newAction][newFacing]);
+                return true;
+            }
         }
-        addChild(artClips[dirs[0]]);
+        return false;
     }
+
+    public function createUnitArt() : void{
+
+    }
+
+
+    // Add clips for each direction and action, given a list of actions
+    protected function addDirectionalClips(namePrefix:String, width:uint, height:uint, actions:Array, speed:Number=5, x:int=0, y:int =0) : void{
+        for each(var action:String in actions){
+            addAllDirectionalClipsForAction(namePrefix, width, height, action, speed, x, y);
+        }
+    }
+
+    // Add clips for each direction, given a specific action
+    protected function addAllDirectionalClipsForAction(namePrefix:String, width:uint, height:uint, action:String, speed:Number=5, x:int=0, y:int =0) : void{
+        artClips[action] = new Object();
+        for each(var dir:String in dirs){
+            addDirectionalActionClips(namePrefix, dir, width, height, action, speed, x, y);
+        }
+    }
+
+    protected function addDirectionalActionClips(namePrefix:String, dir:String, width:uint, height:uint, action:String, speed:Number=5, x:int=0, y:int =0) : void{
+        if(artClips[action] == undefined){
+            artClips[action] = new Object();
+        }
+        var clip:MovieClip = new MovieClip(Assets.getAtlas().getTextures(namePrefix+"_"+action+"_"+dir), speed);
+        clip.smoothing = TextureSmoothing.NONE;
+        //clip.x = Math.ceil(-heroArt.width/2);
+        //heroArt.y = Math.ceil(-heroArt.height/2);
+        clip.width = width;
+        clip.height = height;
+        starling.core.Starling.juggler.add(clip);
+        artClips[action][dir] = clip;
+    }
+
 }
 }
