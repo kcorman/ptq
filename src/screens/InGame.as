@@ -58,9 +58,9 @@ public class InGame extends Screen {
         var unit:Tower = new Tower(40,40);
         addUnit(unit);
         addUnit(player.hero);
-        //for(var i:int=0;i<80;i++){
-        //    addUnit(new Engineer(Math.random()*320,Math.random()*480));
-        //}
+        for(var i:int=0;i<80;i++){
+            addUnit(new Engineer(Math.random()*320,Math.random()*480));
+        }
     }
 
     public function addUnit(unit:Unit) : void{

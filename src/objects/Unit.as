@@ -11,7 +11,9 @@ import starling.display.MovieClip;
 
 import starling.display.Sprite;
 import starling.events.Event;
+import starling.filters.ColorMatrixFilter;
 import starling.textures.TextureSmoothing;
+import starling.utils.Color;
 
 /**
  * A parent class for all game units that can move, attack, die, etc.
@@ -118,25 +120,28 @@ public class Unit extends Sprite{
 
 
     // Add clips for each direction and action, given a list of actions
-    protected function addDirectionalClips(namePrefix:String, width:uint, height:uint, actions:Array, speed:Number=5, x:int=0, y:int =0) : void{
+    protected function addDirectionalClips(namePrefix:String, width:uint, height:uint, actions:Array, speed:Number=5, color:uint=0, x:int=0, y:int =0) : void{
         for each(var action:String in actions){
-            addAllDirectionalClipsForAction(namePrefix, width, height, action, speed, x, y);
+            addAllDirectionalClipsForAction(namePrefix, width, height, action, speed, color, x, y);
         }
     }
 
     // Add clips for each direction, given a specific action
-    protected function addAllDirectionalClipsForAction(namePrefix:String, width:uint, height:uint, action:String, speed:Number=5, x:int=0, y:int =0) : void{
+    protected function addAllDirectionalClipsForAction(namePrefix:String, width:uint, height:uint, action:String, speed:Number=5, color:uint=0, x:int=0, y:int =0) : void{
         artClips[action] = new Object();
         for each(var dir:String in dirs){
-            addDirectionalActionClips(namePrefix, dir, width, height, action, speed, x, y);
+            addDirectionalActionClips(namePrefix, dir, width, height, action, speed, color, x, y);
         }
     }
 
-    protected function addDirectionalActionClips(namePrefix:String, dir:String, width:uint, height:uint, action:String, speed:Number=5, x:int=0, y:int =0) : void{
+    protected function addDirectionalActionClips(namePrefix:String, dir:String, width:uint, height:uint, action:String, speed:Number=5, color:uint=0, x:int=0, y:int =0) : void{
         if(artClips[action] == undefined){
             artClips[action] = new Object();
         }
         var clip:MovieClip = new MovieClip(Assets.getAtlas().getTextures(namePrefix+"_"+action+"_"+dir), speed);
+        //var filter:ColorMatrixFilter = new ColorMatrixFilter();
+        //filter.adjustHue(-.3);
+        //clip.filter = filter;
         clip.smoothing = TextureSmoothing.NONE;
         //clip.x = Math.ceil(-heroArt.width/2);
         //heroArt.y = Math.ceil(-heroArt.height/2);

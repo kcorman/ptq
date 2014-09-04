@@ -24,8 +24,6 @@ public class Hero extends Unit {
 
     private function onAddedToStage(event:Event):void{
         this.removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
-        width = 24;
-        height = 24;
         this.addEventListener(Event.ENTER_FRAME, onEnterFrame);
         stage.addEventListener(TouchEvent.TOUCH, onMouseClick);
         this.addEventListener(TouchEvent.TOUCH, onMouseClick);

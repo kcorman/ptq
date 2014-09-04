@@ -8,6 +8,8 @@ public class Engineer extends Hero{
         super();
         this.x = x;
         this.y = y;
+        width = 24;
+        height = 24;
     }
 
     override public function createUnitArt():void{
