@@ -12,8 +12,6 @@ public class Building extends Unit{
         this.x = x;
         this.y = y;
         this.canMove = false;
-        xSpeed = 0;
-        ySpeed = 0;
     }
 
 

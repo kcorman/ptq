@@ -3,7 +3,13 @@
  */
 package objects {
 
+import flash.geom.Point;
+
 import managers.CollisionManager;
+
+import screens.InGame;
+
+import starling.animation.Tween;
 
 import starling.core.Starling;
 
@@ -15,22 +21,43 @@ import starling.filters.ColorMatrixFilter;
 import starling.textures.TextureSmoothing;
 import starling.utils.Color;
 
+import util.Vector2D;
+
 /**
  * A parent class for all game units that can move, attack, die, etc.
  */
 public class Unit extends Sprite{
+
+
     public static const dirs:Array = ["L", "D", "R", "U"];
     public static const FACING_LEFT:String = "L";
     public static const FACING_DOWN:String = "D";
     public static const FACING_RIGHT:String = "R";
     public static const FACING_UP:String = "U";
+    public static const COMMAND_MOVE:String = "move";
+    public static const COMMAND_PASSIVE:String = "passive";
+    public static const COMMAND_ATTACK:String = "attack";
 
     //Should be of the form { "L" : MovieClip, "R" : MovieClip, etc. }
     protected var artClips:Object;
 
     private var _facing:String = FACING_DOWN;
 
+    private var _target:Unit;
+
+    private var _dest:Point;
+
+    private var _attackRange:Number = 100;
+
     private var _action:String = "stand";
+
+    private var invulnerable:Boolean = false;
+
+    private var _behavior:Behavior;
+
+    private var _attackDelayTime:Number = 1;
+
+    protected var _timeSinceLastAttack:Number = 0;
 
     public var cost:int = 0;
 
@@ -38,13 +65,11 @@ public class Unit extends Sprite{
 
     public var isBeingBuilt:Boolean = false;
 
-    public var life:Number = 1;
-
-    public var xSpeed:Number = 0;
-
-    public var ySpeed:Number = 0;
+    private var _life:Number = 1;
 
     public var angularSpeed:Number = 0;
+
+    public var speed:Vector2D;
 
     public var canMove:Boolean = true;
 
@@ -54,12 +79,69 @@ public class Unit extends Sprite{
 
     public var isAlive:Boolean = true;
 
+    public function get currentCommand():String {
+        return _currentCommand;
+    }
+
+    public function set currentCommand(value:String):void {
+        _currentCommand = value;
+    }
+
+    private var _currentCommand:String;
+
+    public function get behavior():Behavior {
+        return _behavior;
+    }
+
+    public function set behavior(value:Behavior):void {
+        _behavior = value;
+    }
 
     public function Unit(x:Number=0, y:Number=0) {
         this.x = x;
         this.y = y;
         this.addEventListener(starling.events.Event.ADDED_TO_STAGE, onAddedToStage);
         artClips = new Object();
+        _behavior = new Behavior();
+        _currentCommand = COMMAND_PASSIVE;
+        speed = new Vector2D();
+        speed.maxX = 10;
+        speed.maxY = 10;
+    }
+    public function get target():Unit {
+        return _target;
+    }
+
+    public function set target(value:Unit):void {
+        _target = value;
+    }
+
+    public function get dest():Point {
+        return _dest;
+    }
+
+    public function set dest(value:Point):void {
+        _dest = value;
+    }
+
+    public function get attackRange():Number {
+        return _attackRange;
+    }
+
+    public function set attackRange(value:Number):void {
+        _attackRange = value;
+    }
+
+    public function get attackDelayTime():Number {
+        return _attackDelayTime;
+    }
+
+    public function set attackDelayTime(value:Number):void {
+        _attackDelayTime = value;
+    }
+
+    public function attack() : void{
+
     }
 
     private function onAddedToStage(e:Event) : void{
@@ -73,7 +155,55 @@ public class Unit extends Sprite{
         if(canMove) {
             collsMgr.requestMove(this, timePassed);
         }
+        _timeSinceLastAttack += timePassed;
         rotation += angularSpeed * timePassed;
+        if(currentCommand == COMMAND_ATTACK){
+            if(_target.x < x - _attackRange){
+                speed.x = -speed.maxX;
+            }else if(_target.x > x + _attackRange){
+                speed.x = speed.maxX;
+            }else{
+                speed.x = 0;
+            }
+            if(_target.y < y - _attackRange){
+                speed.y = -speed.maxY;
+            }else if(_target.y > y + _attackRange){
+                speed.y = -speed.maxY;
+            }else{
+                speed.y = 0;
+            }
+            if(_timeSinceLastAttack > _attackDelayTime && target != null) {
+                if (Math.abs(_target.x) - x < _attackRange && Math.abs(_target.y - y) < _attackRange) {
+                    attack();
+                    _timeSinceLastAttack = 0;
+                }
+            }
+        }else if(currentCommand == COMMAND_MOVE){
+            if(x < _dest.x){
+                speed.x = -speed.maxX;
+            }else if(x > _dest.x){
+                speed.x = speed.maxX;
+            }else{
+                speed.x = 0;
+            }
+            if(y < _dest.y){
+                speed.y = -speed.maxY;
+            }else if(y > _dest.y){
+                speed.y = speed.maxY;
+            }else{
+                speed.y = 0;
+            }
+        }
+
+    }
+
+    public function issueCommand(cmd:String, ...args){
+        currentCommand = cmd;
+        if(cmd == COMMAND_ATTACK){
+            _target = args[0];
+        }else if(cmd == COMMAND_MOVE){
+            _dest = args[0];
+        }
     }
 
     public function get action():String {
@@ -151,5 +281,38 @@ public class Unit extends Sprite{
         artClips[action][dir] = clip;
     }
 
+    public function get life():Number {
+        return _life;
+    }
+
+    public function die() : void{
+        if(invulnerable) return;
+        var tw:Tween = new Tween(this, 1);
+        canMove = false;
+        invulnerable = true;
+        tw.animate("alpha", 0);
+        tw.onComplete=destroy;
+        InGame.instance.juggler.add(tw);
+    }
+
+    /**
+     * Immedietly destroys this object, removing it from its parent and disposing it
+     */
+    public function destroy() : void{
+        parent.removeChild(this, true);
+    }
+
+    public function set life(value:Number):void {
+        _life = value;
+    }
+
+    public function takeDamage(amount:Number) : void {
+        if (!invulnerable) {
+            life = life - amount;
+            if (life <= 0) {
+                this.die();
+            }
+        }
+    }
 }
 }
