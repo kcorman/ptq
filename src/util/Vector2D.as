@@ -33,5 +33,9 @@ public class Vector2D {
     public function get magnitude() : Number{
         return Math.sqrt(x*x + y*y);
     }
+
+    public function maxMagnitude() : Number{
+        return Math.sqrt(maxX * maxX + maxY * maxY);
+    }
 }
 }

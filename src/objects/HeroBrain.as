@@ -32,43 +32,19 @@ public class HeroBrain extends Brain{
     }
 
     override public function advanceTime(time:Number) : void{
-        if(_dest.x > _body.x + TOLERANCE){
-            _body.speed.x = _body.speed.maxX;
-        }else if(_dest.x < _body.x - TOLERANCE){
-            _body.speed.x = -_body.speed.maxX;
+        var difX:Number = _dest.x - _body.x;
+        var difY:Number = _dest.y - _body.y;
+        var mag:Number = Utility.dist(_dest, _body);
+        if(Math.abs(difX) > TOLERANCE){
+            _body.speed.x = _body.speed.maxMagnitude() * (difX/mag);
         }else{
             _body.speed.x = 0;
         }
-        if(_dest.y > _body.y + TOLERANCE){
-            _body.speed.y = _body.speed.maxY;
-        }else if(_dest.y < _body.y - TOLERANCE){
-            _body.speed.y = -_body.speed.maxY;
+        if(Math.abs(difY) > TOLERANCE){
+            _body.speed.y = _body.speed.maxMagnitude() * (difY/mag);
         }else{
             _body.speed.y = 0;
         }
-        /*if(_target == null || !_target.isAlive || !_target.exists){
-
-        }
-        if(_target == null) return;
-        if(_target.x < _body.x - _attackRange){
-            _body.speed.x = -_body.speed.maxX;
-        }else if(_target.x > _body.x + _attackRange){
-            _body.speed.x = _body.speed.maxX;
-        }else{
-            _body.speed.x = 0;
-        }
-        if(_target.y < _body.y - _attackRange){
-            _body.speed.y = -_body.speed.maxY;
-        }else if(_target.y > _body.y + _attackRange){
-            _body.speed.y = -_body.speed.maxY;
-        }else{
-            _body.speed.y = 0;
-        }
-        if(_body.canAttack()) {
-            if (Utility.dist(_body, _target) < _attackRange) {
-                _body.attack(_target);
-            }
-        }*/
     }
 }
 }
