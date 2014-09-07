@@ -5,6 +5,8 @@ package screens {
 import managers.CollisionManager;
 import managers.ProjectileManager;
 
+import objects.Blob;
+
 import objects.Engineer;
 import objects.Hero;
 
@@ -79,6 +81,7 @@ public class InGame extends Screen {
         unit.brain.faction = 1;
         addUnit(unit);
         addUnit(player.hero);
+        addUnit(new Blob(60,60,1));
         //for(var i:int=0;i<80;i++){
         //    addUnit(new Engineer(Math.random()*320,Math.random()*480));
         //}
@@ -86,8 +89,7 @@ public class InGame extends Screen {
 
     public function addUnit(unit:Unit) : void{
         collsMgr.addUnit(unit);
-            _juggler.add(unit.brain);
-
+        _juggler.add(unit.brain);
         units.push(unit);
         this.addChild(unit);
     }

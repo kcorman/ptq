@@ -8,9 +8,7 @@ package objects {
 public class Building extends Unit{
 
     public function Building(x:Number=0, y:Number=0) {
-        super();
-        this.x = x;
-        this.y = y;
+        super(x,y);
         this.canMove = false;
     }
 

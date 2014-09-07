@@ -4,8 +4,8 @@
 package objects {
 public class Engineer extends Hero{
 
-    public function Engineer(x:Number=0, y:Number=0) {
-        super();
+    public function Engineer(x:Number=0, y:Number=0, faction:int=0) {
+        super(x,y,faction);
         this.x = x;
         this.y = y;
         width = 24;

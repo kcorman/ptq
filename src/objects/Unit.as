@@ -97,12 +97,13 @@ public class Unit extends Sprite implements IControllable{
         _brain = value;
     }
 
-    public function Unit(x:Number=0, y:Number=0) {
+    public function Unit(x:Number=0, y:Number=0, faction:int=0) {
         this.x = x;
         this.y = y;
         this.addEventListener(starling.events.Event.ADDED_TO_STAGE, onAddedToStage);
         artClips = new Object();
         _brain = new Brain(this);
+        _brain.faction = faction;
         _speed = new Vector2D();
         speed.maxX = 10;
         speed.maxY = 10;

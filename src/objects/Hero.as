@@ -15,13 +15,14 @@ public class Hero extends Unit {
     private var oldY:Number;
     private var dy:Number = 0;
 
-    public function Hero(x:Number=0, y:Number=0) {
-        super();
+    public function Hero(x:Number=0, y:Number=0,faction:int=0) {
+        super(x,y);
         this.x = x;
         this.y = y;
         speed.maxX = 70;
         speed.maxY = 70;
         brain = new HeroBrain(this);
+        brain.faction=faction;
         this.addEventListener(starling.events.Event.ADDED_TO_STAGE, onAddedToStage);
     }
 

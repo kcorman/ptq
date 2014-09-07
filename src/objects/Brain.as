@@ -85,30 +85,29 @@ public class Brain implements IAnimatable {
     }
 
     public function advanceTime(time:Number):void {
-            if(_target == null || !_target.isAlive || !_target.exists){
-                acquireTarget();
-            }
-            if(_target == null) return;
-            if(_target.x < _body.x - _attackRange){
-                _body.speed.x = -_body.speed.maxX;
-            }else if(_target.x > _body.x + _attackRange){
-                _body.speed.x = _body.speed.maxX;
-            }else{
-                _body.speed.x = 0;
-            }
-            if(_target.y < _body.y - _attackRange){
-                _body.speed.y = -_body.speed.maxY;
-            }else if(_target.y > _body.y + _attackRange){
-                _body.speed.y = -_body.speed.maxY;
-            }else{
-                _body.speed.y = 0;
-            }
-            if(_body.canAttack()) {
-                if (Utility.dist(_body, _target) < _attackRange) {
-                    _body.attack(_target);
-                }
+        if(_target == null || !_target.isAlive || !_target.exists){
+            acquireTarget();
+        }
+        if(_target == null) return;
+        var difX:Number = _target.x - _body.x;
+        var difY:Number = _target.y - _body.y;
+        var mag:Number = Utility.dist(_target, _body);
+        if(Math.abs(difX) > _attackRange * (difX/mag)){
+            _body.speed.x = _body.speed.maxMagnitude() * (difX/mag);
+        }else{
+            _body.speed.x = 0;
+        }
+        if(Math.abs(difY) > _attackRange * (difY/mag)){
+            _body.speed.y = _body.speed.maxMagnitude() * (difY/mag);
+        }else{
+            _body.speed.y = 0;
+        }
+        if(_body.canAttack()) {
+            if (Utility.dist(_body, _target) < _attackRange) {
+                _body.attack(_target);
             }
         }
     }
+}
 
 }

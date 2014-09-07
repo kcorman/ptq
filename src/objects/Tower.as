@@ -15,9 +15,7 @@ public class Tower extends Building {
     private static var _arrow:Texture;;
     // A simple tower that shoots arrows at bad guys
     public function Tower(x:Number=0, y:Number=0) {
-        super();
-        this.x = x;
-        this.y = y;
+        super(x,y);
         width = 32;
         height = 64;
         if(null == _arrow){
