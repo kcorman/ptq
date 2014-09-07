@@ -26,7 +26,7 @@ import util.Vector2D;
 /**
  * A parent class for all game units that can move, attack, die, etc.
  */
-public class Unit extends Sprite{
+public class Unit extends Sprite implements IControllable{
 
 
     public static const dirs:Array = ["L", "D", "R", "U"];
@@ -34,9 +34,6 @@ public class Unit extends Sprite{
     public static const FACING_DOWN:String = "D";
     public static const FACING_RIGHT:String = "R";
     public static const FACING_UP:String = "U";
-    public static const COMMAND_MOVE:String = "move";
-    public static const COMMAND_PASSIVE:String = "passive";
-    public static const COMMAND_ATTACK:String = "attack";
 
     //Should be of the form { "L" : MovieClip, "R" : MovieClip, etc. }
     protected var artClips:Object;
@@ -53,8 +50,12 @@ public class Unit extends Sprite{
 
     private var invulnerable:Boolean = false;
 
-    private var _behavior:Behavior;
+    private var _brain:Brain;
 
+    // For controlling this unit
+    private var _speed:Vector2D;
+
+    // For regulating attack
     private var _attackDelayTime:Number = 1;
 
     protected var _timeSinceLastAttack:Number = 0;
@@ -69,9 +70,7 @@ public class Unit extends Sprite{
 
     public var angularSpeed:Number = 0;
 
-    public var speed:Vector2D;
-
-    public var canMove:Boolean = true;
+    private var _canMove:Boolean = true;
 
     public var isCollidable:Boolean = true;
 
@@ -89,12 +88,13 @@ public class Unit extends Sprite{
 
     private var _currentCommand:String;
 
-    public function get behavior():Behavior {
-        return _behavior;
+
+    public function get brain():Brain {
+        return _brain;
     }
 
-    public function set behavior(value:Behavior):void {
-        _behavior = value;
+    public function set brain(value:Brain):void {
+        _brain = value;
     }
 
     public function Unit(x:Number=0, y:Number=0) {
@@ -102,9 +102,8 @@ public class Unit extends Sprite{
         this.y = y;
         this.addEventListener(starling.events.Event.ADDED_TO_STAGE, onAddedToStage);
         artClips = new Object();
-        _behavior = new Behavior();
-        _currentCommand = COMMAND_PASSIVE;
-        speed = new Vector2D();
+        _brain = new Brain(this);
+        _speed = new Vector2D();
         speed.maxX = 10;
         speed.maxY = 10;
     }
@@ -140,8 +139,12 @@ public class Unit extends Sprite{
         _attackDelayTime = value;
     }
 
-    public function attack() : void{
+    public function attack(target:Unit) : void {
+        _timeSinceLastAttack = 0;
+    }
 
+    public function canAttack() : Boolean{
+        return _attackDelayTime < _timeSinceLastAttack;
     }
 
     private function onAddedToStage(e:Event) : void{
@@ -152,57 +155,28 @@ public class Unit extends Sprite{
 
 
     public function advanceTime(timePassed:Number, collsMgr:CollisionManager) : void {
-        if(canMove) {
+        if(_canMove) {
             collsMgr.requestMove(this, timePassed);
         }
-        _timeSinceLastAttack += timePassed;
         rotation += angularSpeed * timePassed;
-        if(currentCommand == COMMAND_ATTACK){
-            if(_target.x < x - _attackRange){
-                speed.x = -speed.maxX;
-            }else if(_target.x > x + _attackRange){
-                speed.x = speed.maxX;
+        _timeSinceLastAttack += timePassed;
+        if(speed.magnitude < 1){
+            action = "stand";
+        }else{
+            action = "walk";
+            if(Math.abs(speed.x) > Math.abs(speed.y)){
+                if(speed.x > 0){
+                    facing = FACING_RIGHT;
+                }else{
+                    facing = FACING_LEFT;
+                }
             }else{
-                speed.x = 0;
-            }
-            if(_target.y < y - _attackRange){
-                speed.y = -speed.maxY;
-            }else if(_target.y > y + _attackRange){
-                speed.y = -speed.maxY;
-            }else{
-                speed.y = 0;
-            }
-            if(_timeSinceLastAttack > _attackDelayTime && target != null) {
-                if (Math.abs(_target.x) - x < _attackRange && Math.abs(_target.y - y) < _attackRange) {
-                    attack();
-                    _timeSinceLastAttack = 0;
+                if(speed.y > 0){
+                    facing = FACING_DOWN;
+                }else{
+                    facing = FACING_UP;
                 }
             }
-        }else if(currentCommand == COMMAND_MOVE){
-            if(x < _dest.x){
-                speed.x = -speed.maxX;
-            }else if(x > _dest.x){
-                speed.x = speed.maxX;
-            }else{
-                speed.x = 0;
-            }
-            if(y < _dest.y){
-                speed.y = -speed.maxY;
-            }else if(y > _dest.y){
-                speed.y = speed.maxY;
-            }else{
-                speed.y = 0;
-            }
-        }
-
-    }
-
-    public function issueCommand(cmd:String, ...args){
-        currentCommand = cmd;
-        if(cmd == COMMAND_ATTACK){
-            _target = args[0];
-        }else if(cmd == COMMAND_MOVE){
-            _dest = args[0];
         }
     }
 
@@ -288,7 +262,7 @@ public class Unit extends Sprite{
     public function die() : void{
         if(invulnerable) return;
         var tw:Tween = new Tween(this, 1);
-        canMove = false;
+        _canMove = false;
         invulnerable = true;
         tw.animate("alpha", 0);
         tw.onComplete=destroy;
@@ -313,6 +287,21 @@ public class Unit extends Sprite{
                 this.die();
             }
         }
+    }
+
+    public function get speed():Vector2D {
+        return _speed;
+    }
+
+    public function useAbility():void {
+    }
+
+    public function get canMove():Boolean {
+        return _canMove;
+    }
+
+    public function set canMove(value:Boolean):void {
+        _canMove = value;
     }
 }
 }

@@ -3,7 +3,6 @@
  */
 package screens {
 import managers.CollisionManager;
-import managers.ControlManager;
 import managers.ProjectileManager;
 
 import objects.Engineer;
@@ -38,8 +37,6 @@ public class InGame extends Screen {
 
     private var _projectileMgr:ProjectileManager;
 
-    private var _controlMgr:ControlManager;
-
     public function get projectileMgr():ProjectileManager {
         return _projectileMgr;
     }
@@ -48,17 +45,15 @@ public class InGame extends Screen {
 
     public function InGame(level:uint=1) {
         super();
+        instance = this;
         _juggler = new Juggler();
         Starling.juggler.add(_juggler);
         this.level = level;
         mapFact = new TileMapFactory();
-        _controlMgr = new ControlManager();
         collsMgr = new CollisionManager();
         _projectileMgr = new ProjectileManager(this);
-        _juggler.add(_controlMgr);
         units = new Vector.<Unit>;
         player = new Player(1, Color.RED, new Engineer());
-        instance = this;
     }
 
     override public function onAddedToStage(event:Event) : void{
@@ -81,7 +76,7 @@ public class InGame extends Screen {
         player.hero.y = stage.stageHeight/2;
 
         var unit:Tower = new Tower(40,40);
-        unit.behavior.faction = 1;
+        unit.brain.faction = 1;
         addUnit(unit);
         addUnit(player.hero);
         //for(var i:int=0;i<80;i++){
@@ -91,9 +86,8 @@ public class InGame extends Screen {
 
     public function addUnit(unit:Unit) : void{
         collsMgr.addUnit(unit);
-        if(!(unit is Hero)){
-            _controlMgr.addUnit(unit);
-        }
+            _juggler.add(unit.brain);
+
         units.push(unit);
         this.addChild(unit);
     }

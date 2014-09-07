@@ -23,17 +23,12 @@ public class Tower extends Building {
         if(null == _arrow){
             _arrow = Assets.getAtlas().getTexture("tower_stand_D_1");
         }
-        /*var call:DelayedCall = new DelayedCall(function() : void {
-            shoot(InGame.instance.getUnitsMatching(function(u:Unit) : Boolean{
-                return (u is Hero);
-            })[0]);
-        }, 3);
-        InGame.instance.juggler.add(call);*/
+        attackDelayTime = 2;
     }
 
-    override public function attack() : void{
-        super.attack();
-        shoot(behavior.target);
+    override public function attack(_target:Unit) : void {
+        super.attack(_target);
+        shoot(_target);
     }
 
     override public function createUnitArt():void {

@@ -19,6 +19,9 @@ public class Hero extends Unit {
         super();
         this.x = x;
         this.y = y;
+        speed.maxX = 70;
+        speed.maxY = 70;
+        brain = new HeroBrain(this);
         this.addEventListener(starling.events.Event.ADDED_TO_STAGE, onAddedToStage);
     }
 
@@ -30,15 +33,11 @@ public class Hero extends Unit {
     }
 
     private function onMouseClick(event:TouchEvent) : void{
-        var t:Touch = event.getTouch(stage);
-        if(t){
-            touchX = t.globalX;
-            touchY = t.globalY;
-        }
+
     }
 
     private function onEnterFrame(event:Event) : void{
-        var difU:Number = 0;
+        /*var difU:Number = 0;
         var difD:Number = 0;
         var difL:Number = 0;
         var difR:Number = 0;
@@ -70,7 +69,7 @@ public class Hero extends Unit {
                 isJumping = false;
                 dy = 0;
             }
-        }
+        }*/
         //if(y+heroArt.height > stage.stageHeight) y = stage.stageHeight - heroArt.height;
         //if(y < 0) y = 0;
     }

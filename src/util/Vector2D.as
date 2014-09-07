@@ -29,5 +29,9 @@ public class Vector2D {
         _x = x;
         _y = y;
     }
+
+    public function get magnitude() : Number{
+        return Math.sqrt(x*x + y*y);
+    }
 }
 }
